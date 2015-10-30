@@ -1,5 +1,7 @@
 <?php
 
+
+
 function myFunctionForTestTask($someArray)
 {
     $square = $someArray[1]['square'];

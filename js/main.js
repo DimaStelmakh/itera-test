@@ -4,15 +4,6 @@ $(document).ready(function () {
     var cellsInfo = {};
 
 
-    //console.log('arrOfPostedValues: '+arrOfPostedValues);
-    //function isNumeric(value){
-    //    if(!isNaN(parseFloat(value)) && isFinite(value)){
-    //        return true;
-    //    } else {
-    //        return false;
-    //    }
-    //}
-
     function strValueToIntInArrAndSortIt(str) {
         if (str == '' || str === undefined) {
             return str = 0;
@@ -27,32 +18,12 @@ $(document).ready(function () {
         return arr;
     }
 
-    function isArraysOfMultidimensionalArr1IdentityToArr2(arr1, arr2) {
-        for (var i = 0; i < arr1.length; ++i) {
-            if (arr1[i].length == arr2.length) {
-                var numberOfMatch = 0;
-                for (var x = 0; x < arr1[i].length; ++x) {
-                    if ((arr1[i][x] === arr2[x])) {
-                        ++numberOfMatch;
-                    }
-                }
-                if (numberOfMatch === arr1[i].length) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
 
     var validators = [];
     //
     var validateIntersection = function (dataForValidation) {
         var enteredString = dataForValidation;
         var enteredArr = strValueToIntInArrAndSortIt(enteredString);
-        var arrWithEnterdValues = [];
-
         var valuesThatAlredyPosted = arrOfPostedValues;//$('#cells_selected_numbers').val();
 
         var allNumbers = [];
@@ -61,26 +32,9 @@ $(document).ready(function () {
             for (var x in arrValuesThatAlredyPosted){
                 allNumbers.push(arrValuesThatAlredyPosted[x]);
             }
-            //allNumbers.push(strValueToIntInArrAndSortIt(valuesThatAlredyPosted[i]));
-            //allNumbers.push
-            //console.log('allNumbers['+i+']: '+allNumbers[i]);
         }
-        console.log('allNumbers: '+allNumbers);
-        console.log('enteredArr: '+enteredArr);
-        // todo allNumbers - то что надо, массив со всеми введенными значениями
 
         var isIntersect = false;
-
-        //for (var i in allNumbers){
-        //    for (var x in enteredArr){
-        //        //console.log('All values: '+allNumbers[i]);
-        //        //console.log('Entered: '+enteredArr[x]);
-        //        if (allNumbers[i] == enteredArr[x]){
-        //            isIntersect = true;
-        //        }
-        //    }
-        //}
-
         for (var i = 0; i < allNumbers.length; ++i){
             for (var x = 0; x < enteredArr.length; ++x){
                 if (allNumbers[i] == enteredArr[x]){
@@ -89,7 +43,6 @@ $(document).ready(function () {
             }
         }
 
-        console.log('isIntersect: '+isIntersect);
         valuesThatAlredyPosted = 0;
 
 
@@ -116,10 +69,15 @@ $(document).ready(function () {
 
         enteredArr = enteredString.split(',');
         for(i in enteredArr){
+
             if (!($.isNumeric(enteredArr[i]))){
                 isThisNumeric = false;
             } else {
                 isThisNumeric = true;
+            }
+            if (enteredArr[i].indexOf('.') == true){
+                isThisNumeric = false;
+
             }
         }
 
@@ -156,19 +114,16 @@ $(document).ready(function () {
             return true;
         }
 
-    }
-    //validators.push(validateIntersection);
-    //validators.push(validateUseOnlyCommaAsSeparator);
+    };
 
 
-    var validateFigure = function (dataForValidation){//, sizeOfOneSideOfSquare) {
+
+    var validateFigure = function (dataForValidation){
 
         var enteredCells = strValueToIntInArrAndSortIt(dataForValidation);
 
-        var square = $('#square_size').val();//sizeOfOneSideOfSquare;
-        //console.log('square: '+square);
+        var square = $('#square_size').val();
         var sizeOfSelectedFigure = enteredCells.length;
-        //console.log('sizeOfSelectedFigure: '+sizeOfSelectedFigure);
         var rows = 1;
         var columns = 1;
         var first = enteredCells[0];
@@ -209,20 +164,6 @@ $(document).ready(function () {
             $('#input_critical_data').removeClass('error_border_for_critical_data');
             return true;
         }
-
-
-        //    if (!(enteredString.match(myValidationRegExp))) {
-        //        // вывод ошибки
-        //        $('#display_error_wrong_data').removeClass('off_errors').addClass('on_errors');
-        //        $('#input_critical_data').addClass('error_border_for_critical_data');
-        //        return false;
-        //    } else {
-        //        $('#display_error_wrong_data').removeClass('on_errors').addClass('off_errors');
-        //        $('#input_critical_data').removeClass('error_border_for_critical_data');
-        //    }
-        //    return true;
-
-
     };
 
 
@@ -233,9 +174,7 @@ $(document).ready(function () {
 
 
     var validate = function (dataForValidation) {
-        //console.log(validators);
         for (var i = 0; i < validators.length; ++i) {
-            //console.log(validators[i]);
             if (!(validators[i](dataForValidation))) {
                 return false
             }
@@ -243,31 +182,9 @@ $(document).ready(function () {
         return true;
     };
 
-    var sizeOfSquare = 0;
-    //$('#square_size').on('blur', function(){
-    //
-    //    var sizeOfOneSideOfSquare = $('#square_size').val();
-    //    //var enteredString = $('#cells_selected_numbers').val();
-    //    //var enteredArr = strValueToIntInArrAndSortIt(enteredString);
-    //    ////console.log('enteredArr: '+enteredArr);
-    //    sizeOfSquare = Math.pow(sizeOfOneSideOfSquare, 2);
-    //    ////alert('sizeOfOneSideOfSquare: '+sizeOfOneSideOfSquare);
-    //    //console.log('sizeOfOneSideOfSquare: '+sizeOfOneSideOfSquare);
-    //    //console.log('sizeOfSquare: '+sizeOfSquare);
-    //    //console.log('enteredArr: '+enteredArr);
-    //    //if ()
-    //    //return true;
-    //
-    //});
-
-
-
-
 
     var arrOfPostedValues = [];
     var counter = 0;
-
-
 
     $('form').submit(function (e) {
         e.preventDefault();
@@ -290,10 +207,7 @@ $(document).ready(function () {
             ++counter;
             cellsInfo[counter] = data;
 
-
             sizeOfOneSideOfSquare = $('#square_size').val();
-            //console.log('sizeOfOneSideOfSquare: '+sizeOfOneSideOfSquare);
-
             $('#square_size').prop('disabled', 'true');
 
 
