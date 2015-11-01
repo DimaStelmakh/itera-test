@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     var element = $('#cells_selected_numbers');
+    var sizeOfSquare = $('#square_size');
     var cellsInfo = {};
 
 
@@ -19,7 +20,8 @@ $(document).ready(function () {
     }
 
 
-    var validators = [];
+    var validatorsForEnteredCells = [];
+    var validatorsForSizeOfSquare = [];
     //
     var validateIntersection = function (dataForValidation) {
         var enteredString = dataForValidation;
@@ -42,12 +44,7 @@ $(document).ready(function () {
                 }
             }
         }
-
         valuesThatAlredyPosted = 0;
-
-
-
-
         if (isIntersect == true) {
             $('#display_error_intersect_numbers').removeClass('off_errors').addClass('on_errors');
             $('#input_critical_data').addClass('error_border_for_critical_data');
@@ -96,9 +93,12 @@ $(document).ready(function () {
     var validateNumberOfInputCellsAccordingSizeOfSquare = function (dataForValidation) {
         var enteredString = dataForValidation;
         var enteredArr = strValueToIntInArrAndSortIt(enteredString);
-        var sizeOfSquare = $('#square_size').val();
+        var sizeOfSquare = parseInt($('#square_size').val());
+        var allNumbersInSquare = Math.pow(sizeOfSquare, 2);
+        var maxInEnteredArray = Math.max.apply(null, enteredArr);
+
         var isGreater = false;
-        if (enteredArr.length > sizeOfSquare){
+        if ((enteredArr.length > allNumbersInSquare) || (maxInEnteredArray > allNumbersInSquare)){
             isGreater = true;
         } else {
             isGreater = false;
@@ -167,15 +167,48 @@ $(document).ready(function () {
     };
 
 
-    validators.push(validateIntersection);
-    validators.push(validateUseOnlyCommaAsSeparator);
-    validators.push(validateFigure);
-    validators.push(validateNumberOfInputCellsAccordingSizeOfSquare);
+    validatorsForEnteredCells.push(validateIntersection);
+    validatorsForEnteredCells.push(validateUseOnlyCommaAsSeparator);
+    validatorsForEnteredCells.push(validateFigure);
+    validatorsForEnteredCells.push(validateNumberOfInputCellsAccordingSizeOfSquare);
 
 
-    var validate = function (dataForValidation) {
-        for (var i = 0; i < validators.length; ++i) {
-            if (!(validators[i](dataForValidation))) {
+    var validateEnteredSizeOfSquare = function (dataForValidation){
+        var ValueForEnteredSizeOfSquare = dataForValidation;
+        var lengthOfValueForEnteredSizeOfSquare = ValueForEnteredSizeOfSquare.length;
+
+        var isEmpty = false;
+        if (lengthOfValueForEnteredSizeOfSquare < 1){
+            isEmpty = true;
+        }
+
+        if (isEmpty == true) {
+            $('#display_error_empty_field_for_size_of_square').removeClass('off_errors').addClass('on_errors');
+            $('#input_critical_data_size').addClass('error_border_for_critical_data');
+            return false;
+        } else {
+            $('#display_error_empty_field_for_size_of_square').removeClass('on_errors').addClass('off_errors');
+            $('#input_critical_data_size').removeClass('error_border_for_critical_data');
+            return true;
+        }
+
+    };
+
+    validatorsForSizeOfSquare.push(validateEnteredSizeOfSquare);
+
+
+    var validateForEnteredCells = function (dataForValidation) {
+        for (var i = 0; i < validatorsForEnteredCells.length; ++i) {
+            if (!(validatorsForEnteredCells[i](dataForValidation))) {
+                return false
+            }
+        }
+        return true;
+    };
+
+    var validateForSizeOfSquare = function (dataForValidation) {
+        for (var i = 0; i < validatorsForSizeOfSquare.length; ++i) {
+            if (!(validatorsForSizeOfSquare[i](dataForValidation))) {
                 return false
             }
         }
@@ -188,10 +221,10 @@ $(document).ready(function () {
 
     $('form').submit(function (e) {
         e.preventDefault();
-        var sizeOfOneSideOfSquare = $('#square_size').val();
-        if (validate(element.val(), sizeOfOneSideOfSquare)) {
+        //var sizeOfOneSideOfSquare = $('#square_size').val();
+        if ((validateForEnteredCells(element.val())) && (validateForSizeOfSquare(sizeOfSquare.val()))) {
 
-            arrOfPostedValues[counter]= $('#cells_selected_numbers').val();
+
 
             var data = {
                 square: $('#square_size').val(),
@@ -203,13 +236,11 @@ $(document).ready(function () {
                 bgcolor: $('#cell_background_color').val()
             };
 
-
             ++counter;
             cellsInfo[counter] = data;
+            arrOfPostedValues[counter]= $('#cells_selected_numbers').val();
 
-            sizeOfOneSideOfSquare = $('#square_size').val();
             $('#square_size').prop('disabled', 'true');
-
 
             $.ajax({
                 type: "POST",

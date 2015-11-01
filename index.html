@@ -14,11 +14,14 @@
 
             <fieldset>
 
-                <div>
+                <div id="input_critical_data_size">
                     <label for="square_size" >Enter the size of square: </label>
                     <input id="square_size" type="number" min="1" max="10" maxlength="2"
                            name="square1" placeholder="From 1 to 10" onkeydown="return false;"/>
                 </div>
+
+                <span class="off_errors" id="display_error_empty_field_for_size_of_square">
+                        Field can not be empty.</span>
 
                 <div>
                     <label for="text_displayed_in_cell">Enter text: </label>

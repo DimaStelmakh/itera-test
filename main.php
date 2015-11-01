@@ -1,7 +1,4 @@
 <?php
-
-
-
 function myFunctionForTestTask($someArray)
 {
     $square = $someArray[1]['square'];
@@ -25,7 +22,6 @@ function myFunctionForTestTask($someArray)
         // Отсортировать массив
         sort($arr['cells']);
         // Проверка на корректность вводимых значений
-
         $enteredCells = $arr['cells'];
         $sizeOfSelectedFigure = count($enteredCells);
         $rows = 1;
